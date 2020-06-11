@@ -1,4 +1,4 @@
-# TUI-Select
+# TUI-Select-Vue
 Vue.js Implementation of TailwindUI custom select - look at CustomSelect.vue 
 
 # Note
