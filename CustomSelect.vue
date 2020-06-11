@@ -1,9 +1,10 @@
 <template>
   <!--
-  From original (all requirements met from W3):
+  All W3 Requirements Met
   Custom select controls like this require a considerable amount of JS to implement from scratch. We're planning
   to build some low-level libraries to make this easier with popular frameworks like React, Vue, and even Alpine.js
   in the near future, but in the mean time we recommend these reference guides when building your implementation:
+  TODO: handle click.away
   https://www.w3.org/TR/wai-aria-practices/#Listbox
   https://www.w3.org/TR/wai-aria-practices/examples/listbox/listbox-collapsible.html
   -->
@@ -140,29 +141,20 @@ export default {
     moveHighlightDown () {
       if (this.expanded) {
         // changes the highlight with keyboard input
-        if (this.highlighted !== 2) {
-          this.highlighted += 1
-        } else {
-          this.highlighted = 0
-        }
+        (this.highlighted !== 2 ? this.highlighted += 1 : this.highlighted = 0)
       } else {
         this.expanded = true
       }
     },
     moveHighlightUp () {
       if (this.expanded) {
-        if (this.highlighted !== 0) {
-          this.highlighted -= 1
-        } else {
-          this.highlighted = 2
-        }
+        (this.highlighted !== 0 ? this.highlighted -= 1 : this.highlighted = 2)
       } else {
         this.expanded = true
       }
     },
     toggleSelect () {
       // shows select dropdown
-      // TODO: confirm accessible
       this.expanded = !this.expanded
     },
     selectOption (option) {
