@@ -7,18 +7,18 @@
   https://www.w3.org/TR/wai-aria-practices/#Listbox
   https://www.w3.org/TR/wai-aria-practices/examples/listbox/listbox-collapsible.html
   -->
-   <div class="space-y-1" @keydown.up="moveHighlightUp" @keydown.down="moveHighlightDown" @keydown.enter="selectHighlighted" @keydown.escape="expanded = false">
-    <label id="listbox-label" class="block text-sm font-medium leading-5 text-gray-700">
+    <div class="space-y-1" @keydown.up="moveHighlightUp" @keydown.down="moveHighlightDown" @keydown.enter="selectHighlighted" @keydown.escape="expanded = false">
+    <label :id="('listbox-label-' + title)" class="block text-sm font-medium leading-5 text-gray-700">
       {{ title }}
     </label>
     <div class="relative">
       <span class="inline-block w-full rounded-md shadow-sm">
         <button
-          id="select-button"
+          :id="('select-button-' + title)"
           type="button"
           aria-haspopup="listbox"
           :aria-expanded="expanded.toString()"
-          aria-labelledby="listbox-label select-button"
+          :aria-labelledby="('listbox-label-' + title) + (' select-button-' + title)"
           :class="[expanded ? 'focus:outline-none' : 'focus:outline-none focus:shadow-outline-blue focus:border-blue-300']"
           class="relative w-full py-2 pl-3 pr-10 text-left transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md cursor-default sm:text-sm sm:leading-5"
           @blur="expanded = false"
@@ -44,7 +44,7 @@
         leave-to-class="translate-y-1 opacity-0"
       >
         <!-- Select popover, show/hide based on select state. -->
-        <div v-show="expanded" class="absolute w-full mt-1 bg-white rounded-md shadow-lg">
+        <div v-show="expanded" class="absolute z-30 w-full mt-1 bg-white rounded-md shadow-lg">
           <ul
             id="options-box"
             tabindex="-1"
@@ -157,7 +157,8 @@ export default {
       // highlight with mouse
       this.highlighted = val
     },
-    moveHighlightDown () {
+    moveHighlightDown (e) {
+      e.preventDefault()
       if (this.expanded) {
         // changes the highlight with keyboard input
         (this.highlighted !== this.optionsLength ? this.highlighted += 1 : this.highlighted = 0)
@@ -165,7 +166,8 @@ export default {
         this.expanded = true
       }
     },
-    moveHighlightUp () {
+    moveHighlightUp (e) {
+      e.preventDefault()
       if (this.expanded) {
         (this.highlighted !== 0 ? this.highlighted -= 1 : this.highlighted = this.optionsLength)
       } else {
