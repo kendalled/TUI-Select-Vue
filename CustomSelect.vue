@@ -7,9 +7,9 @@
   https://www.w3.org/TR/wai-aria-practices/#Listbox
   https://www.w3.org/TR/wai-aria-practices/examples/listbox/listbox-collapsible.html
   -->
-  <div class="w-5/12 space-y-1" @keydown.up="moveHighlightUp" @keydown.down="moveHighlightDown" @keydown.enter="selectHighlighted" @keydown.escape="expanded = false">
+   <div class="space-y-1" @keydown.up="moveHighlightUp" @keydown.down="moveHighlightDown" @keydown.enter="selectHighlighted" @keydown.escape="expanded = false">
     <label id="listbox-label" class="block text-sm font-medium leading-5 text-gray-700">
-      Select product (new)
+      {{ title }}
     </label>
     <div class="relative">
       <span class="inline-block w-full rounded-md shadow-sm">
@@ -99,27 +99,47 @@
 <script>
 export default {
   name: 'CustomSelect',
+  props: {
+    options: {
+      type: Array,
+      default () {
+        return [
+          'Lapel Pins',
+          'Challenge Coins',
+          'Keychains'
+        ]
+      }
+    },
+    title: {
+      type: String,
+      default: 'Select product'
+    }
+  },
   data () {
     return {
       highlighted: 0,
       expanded: false,
-      selected: 'Lapel Pins',
-      options: [
-        'Lapel Pins',
-        'Challenge Coins',
-        'Keychains'
-      ]
+      selected: this.options[0]
     }
   },
   computed: {
     ind () {
-      return (this.selected === 'Lapel Pins' ? 0 : this.selected === 'Challenge Coins' ? 1 : 2)
+      return (this.options.indexOf(this.selected))
+    },
+    optionsLength () {
+      return (this.options.length - 1)
     }
   },
   watch: {
     expanded (newVal, oldVal) {
       if (newVal) {
         this.highlighted = this.ind
+      }
+    },
+    selected (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        // note: do not use reserved keywords as emit names
+        this.$emit('chosen', this.selected)
       }
     }
   },
@@ -140,14 +160,14 @@ export default {
     moveHighlightDown () {
       if (this.expanded) {
         // changes the highlight with keyboard input
-        (this.highlighted !== 2 ? this.highlighted += 1 : this.highlighted = 0)
+        (this.highlighted !== this.optionsLength ? this.highlighted += 1 : this.highlighted = 0)
       } else {
         this.expanded = true
       }
     },
     moveHighlightUp () {
       if (this.expanded) {
-        (this.highlighted !== 0 ? this.highlighted -= 1 : this.highlighted = 2)
+        (this.highlighted !== 0 ? this.highlighted -= 1 : this.highlighted = this.optionsLength)
       } else {
         this.expanded = true
       }
