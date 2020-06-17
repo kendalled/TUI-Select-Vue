@@ -1,4 +1,4 @@
-  <template>
+<template>
   <!--
   https://www.w3.org/TR/wai-aria-practices/#Listbox
   https://www.w3.org/TR/wai-aria-practices/examples/listbox/listbox-collapsible.html
@@ -137,21 +137,23 @@ export default {
     },
     selected (newVal, oldVal) {
       if (newVal !== oldVal) {
-        // note: do not use reserved keywords as emit names
+        // emits chosen event and array of chosen elems
         this.$emit('chosen', this.selected)
       }
     }
   },
   methods: {
+    // no highlighted elements (mouseleave)
     unHighlight () {
       this.highlighted = -1
     },
     selectHighlighted () {
-      // selects the highlighted element
+      // checks membership of each option in multiselect
       const hasOption = this.selected.includes(this.options[this.highlighted])
       const data = this.options[this.highlighted]
       if (this.expanded) {
         if (!hasOption && data !== null) {
+        // selects the highlighted element by adding to array
           this.selected.push(data)
         } else if (hasOption) {
           this.selected.splice(this.selected.indexOf(this.options))
@@ -184,14 +186,14 @@ export default {
       this.expanded = !this.expanded
     },
     selectOption (option) {
-      // chooses option
+      // chooses option if not in multiselect, otherwise removes option
       if (!this.selected.includes(option)) {
         this.selected.push(option)
       } else {
         this.selected.splice(this.selected.indexOf(option), 1)
       }
-      // this.expanded = false
     }
   }
 }
 </script>
+
