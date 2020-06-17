@@ -7,8 +7,8 @@ Replace 'Lapel Pins', 'Challenge Coins', and 'Keychains' with any options you ch
 EX: ParentComponent.vue
 ```
 ...
-<CustomSelect :choices="choiceList" />
-<CustomMultiSelect :choices="choiceList" />
+<CustomSelect :options="choiceList" />
+<CustomMultiSelect :options="choiceList" />
 ...
 data () {
   return {
