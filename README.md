@@ -7,7 +7,7 @@ Replace 'Lapel Pins', 'Challenge Coins', and 'Keychains' with any options you ch
 EX: ParentComponent.vue
 
 ```
-NOTE: You need vue-click-outside to handle click.away events
+NOTE: You need 'vue-click-outside' installed for click.away events to work
 ...
 <CustomSelect :options="choiceList" />
 <CustomMultiSelect :options="choiceList" />
