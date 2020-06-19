@@ -15,13 +15,13 @@
       <span class="inline-block w-full rounded-md shadow-sm">
         <button
           :id="('select-button-' + title)"
+          v-click-outside="clickAway"
           type="button"
           aria-haspopup="listbox"
           :aria-expanded="expanded.toString()"
           :aria-labelledby="('listbox-label-' + title) + (' select-button-' + title)"
           :class="[expanded ? 'focus:outline-none' : 'focus:outline-none focus:shadow-outline-blue focus:border-blue-300']"
           class="relative w-full py-2 pl-3 pr-10 text-left transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md cursor-default sm:text-sm sm:leading-5"
-          @blur="expanded = false"
           @click.prevent="toggleSelect"
         >
           <span class="block truncate">
@@ -46,16 +46,15 @@
         <!-- Select popover, show/hide based on select state. -->
         <div v-show="expanded" class="absolute z-30 w-full mt-1 bg-white rounded-md shadow-lg">
           <ul
-            id="options-box"
+            :id="'options-box-' + title "
             tabindex="-1"
             role="listbox"
             aria-labelledby="listbox-label"
-            :aria-activedescendant="[expanded ? 'listbox-item-' + ind : '']"
+            :aria-activedescendant="[expanded ? 'listbox-item-' + options[ind] : '']"
             class="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5"
           >
             <!--
             Select option, manage highlight styles based on mouseenter/mouseleave and keyboard navigation.
-
             Highlighted: "text-white bg-blue-600", Not Highlighted: "text-gray-900"
           -->
             <li
@@ -63,10 +62,10 @@
               :id="'listbox-item-' + o"
               :key="option"
               :tabindex="o"
+              :class="highlighted === o ? 'text-white bg-blue-600' : 'text-gray-900'"
               role="option"
               :aria-selected="selected === option"
-              :class="highlighted === o ? 'text-white bg-blue-600' : 'text-gray-900'"
-              class="relative py-2 pl-3 cursor-pointer select-none pr-9"
+              class="relative py-2 pl-3 cursor-pointer select-none pr-9 focus:outline-none"
               @mouseenter="highlightMe(o)"
               @mouseleave="unHighlight"
               @click="selectOption(option)"
@@ -97,8 +96,12 @@
 </template>
 
 <script>
+import vClickOutside from 'v-click-outside'
 export default {
   name: 'CustomSelect',
+  directives: {
+    clickOutside: vClickOutside.directive
+  },
   props: {
     options: {
       type: Array,
@@ -128,6 +131,9 @@ export default {
     },
     optionsLength () {
       return (this.options.length - 1)
+    },
+    focusID () {
+      return ('listbox-item-' + this.highlighted.toString())
     }
   },
   watch: {
@@ -136,10 +142,18 @@ export default {
         this.highlighted = this.ind
       }
     },
+    highlighted (newVal, oldVal) {
+      if (this.expanded && newVal !== -1) {
+        if (process.browser) {
+          document.getElementById(this.focusID).focus()
+        }
+      }
+    },
     selected (newVal, oldVal) {
       if (newVal !== oldVal) {
         // note: do not use reserved keywords as emit names
         this.$emit('chosen', this.selected)
+        this.expanded = false
       }
     }
   },
@@ -162,6 +176,7 @@ export default {
       if (this.expanded) {
         // changes the highlight with keyboard input
         (this.highlighted !== this.optionsLength ? this.highlighted += 1 : this.highlighted = 0)
+        return true
       } else {
         this.expanded = true
       }
@@ -170,6 +185,7 @@ export default {
       e.preventDefault()
       if (this.expanded) {
         (this.highlighted !== 0 ? this.highlighted -= 1 : this.highlighted = this.optionsLength)
+        return true
       } else {
         this.expanded = true
       }
@@ -177,6 +193,9 @@ export default {
     toggleSelect () {
       // shows select dropdown
       this.expanded = !this.expanded
+    },
+    clickAway () {
+      this.expanded = false
     },
     selectOption (option) {
       // chooses option
