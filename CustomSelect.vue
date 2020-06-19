@@ -4,7 +4,7 @@
   https://www.w3.org/TR/wai-aria-practices/#Listbox
   https://www.w3.org/TR/wai-aria-practices/examples/listbox/listbox-collapsible.html
   -->
-    <div class="space-y-1" @keydown.up="moveHighlightUp" @keydown.down="moveHighlightDown" @keydown.enter="selectHighlighted" @keydown.escape="escapeHandler">
+  <div class="space-y-1" @keydown.up="moveHighlightUp" @keydown.down="moveHighlightDown" @keydown.enter="selectHighlighted" @keydown.escape="escapeHandler">
     <label :id="('listbox-label-' + title)" class="block text-sm font-medium leading-5 text-gray-700">
       {{ title }}
     </label>
@@ -16,7 +16,7 @@
           type="button"
           aria-haspopup="listbox"
           :aria-expanded="expanded.toString()"
-          :aria-labelledby="('listbox-label-' + title) + (' select-button-' + title)"
+          :aria-labelledby="('listbox-label-' + title) + ('select-button-' + title)"
           :class="[expanded ? 'focus:outline-none' : 'focus:outline-none focus:shadow-outline-blue focus:border-blue-300']"
           class="relative w-full py-2 pl-3 pr-10 text-left transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md cursor-default sm:text-sm sm:leading-5"
           @click.prevent="toggleSelect"
@@ -137,6 +137,8 @@ export default {
     expanded (newVal, oldVal) {
       if (newVal) {
         this.highlighted = this.ind
+      } else if (!newVal) {
+        document.getElementById('select-button-' + this.title).focus()
       }
     },
     highlighted (newVal, oldVal) {
@@ -209,3 +211,4 @@ export default {
   }
 }
 </script>
+
