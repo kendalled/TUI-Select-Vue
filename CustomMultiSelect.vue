@@ -140,6 +140,8 @@ export default {
     expanded (newVal, oldVal) {
       if (newVal) {
         this.highlighted = this.ind
+      } else if (!newVal) {
+        document.getElementById('select-button-' + this.title).focus()
       }
     },
     highlighted (newVal, oldVal) {
