@@ -8,11 +8,10 @@
     <label :id="('listbox-label-' + title)" class="block text-sm font-medium leading-5 text-gray-700">
       {{ title }}
     </label>
-    <div class="relative">
+    <div v-click-outside="clickAway" class="relative">
       <span class="inline-block w-full rounded-md shadow-sm">
         <button
           :id="('select-button-' + title)"
-          v-click-outside="clickAway"
           type="button"
           aria-haspopup="listbox"
           :aria-expanded="expanded.toString()"
@@ -137,7 +136,8 @@ export default {
     expanded (newVal, oldVal) {
       if (newVal) {
         this.highlighted = this.ind
-      } else if (!newVal) {
+      } else if (!newVal && process.browser) {
+        console.log('closeed')
         document.getElementById('select-button-' + this.title).focus()
       }
     },
@@ -160,17 +160,22 @@ export default {
     escapeHandler () {
       if (this.expanded) {
         this.expanded = false
-        document.getElementById('select-button-' + this.title).focus()
       }
     },
     unHighlight () {
       this.highlighted = -1
     },
-    selectHighlighted () {
+    selectHighlighted (e) {
+      e.preventDefault()
       // selects the highlighted element
+      // TODO: call func instead of set values
       if (this.expanded) {
+        this.expanded = false
         this.selected = this.options[this.highlighted]
+      } else {
+        this.expanded = true
       }
+      return true
     },
     highlightMe (val) {
       // highlight with mouse
@@ -207,8 +212,8 @@ export default {
       // chooses option
       this.selected = option
       this.expanded = false
+      document.getElementById('select-button-' + this.title).focus()
     }
   }
 }
 </script>
-
