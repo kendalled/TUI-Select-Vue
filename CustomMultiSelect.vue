@@ -3,11 +3,11 @@
   https://www.w3.org/TR/wai-aria-practices/#Listbox
   https://www.w3.org/TR/wai-aria-practices/examples/listbox/listbox-collapsible.html
   -->
-  <div class="space-y-1" @keydown.up="moveHighlightUp" @keydown.down="moveHighlightDown" @keydown.enter="selectHighlighted" @keydown.escape="expanded = false">
+  <div class="space-y-1" @keydown.up="moveHighlightUp" @keydown.down="moveHighlightDown" @keydown.enter="selectHighlighted" @keydown.escape="escapeHandler">
     <label :id="('listbox-label-' + title)" class="block text-sm font-medium leading-5 text-gray-700">
       {{ title }}
     </label>
-    <div class="relative">
+    <div v-click-outside="clickAway" class="relative">
       <span class="inline-block w-full rounded-md shadow-sm">
         <button
           :id="('select-button-' + title)"
@@ -18,7 +18,6 @@
           :class="[expanded ? 'focus:outline-none' : 'focus:outline-none focus:shadow-outline-blue focus:border-blue-300']"
           class="relative w-full py-2 pl-3 pr-10 text-left transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md cursor-default sm:text-sm sm:leading-5"
           @click.prevent="toggleSelect"
-          @blur="expanded = false"
         >
           <span v-if="selected.length > 0" class="block truncate">
             {{ selected }}
@@ -45,11 +44,11 @@
         <!-- Select popover, show/hide based on select state. -->
         <div v-show="expanded" class="absolute z-30 w-full mt-1 bg-white rounded-md shadow-lg">
           <ul
-            id="options-box"
+            :id="'options-box-' + title"
             tabindex="-1"
             role="listbox"
-            aria-labelledby="listbox-label"
-            :aria-activedescendant="[expanded ? 'listbox-item-' + ind : '']"
+            :aria-labelledby="('listbox-label-' + title)"
+            :aria-activedescendant="[expanded ? 'listbox-items-' + ind : '']"
             class="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5"
           >
             <!--
@@ -59,7 +58,7 @@
           -->
             <li
               v-for="(option, o) in options"
-              :id="'listbox-item-' + o"
+              :id="'listbox-items-' + o"
               :key="option"
               :tabindex="o"
               role="option"
@@ -96,8 +95,12 @@
 </template>
 
 <script>
+import vClickOutside from 'v-click-outside'
 export default {
   name: 'CustomMultiSelect',
+  directives: {
+    clickOutside: vClickOutside.directive
+  },
   props: {
     options: {
       type: Array,
@@ -118,7 +121,7 @@ export default {
     return {
       highlighted: 0,
       expanded: false,
-      selected: []
+      selected: [this.options[0]]
     }
   },
   computed: {
@@ -127,12 +130,23 @@ export default {
     },
     optionsLength () {
       return (this.options.length - 1)
+    },
+    focusID () {
+      return ('listbox-items-' + this.highlighted.toString())
     }
   },
   watch: {
+    // selects first active option and focuses it
     expanded (newVal, oldVal) {
       if (newVal) {
         this.highlighted = this.ind
+      }
+    },
+    highlighted (newVal, oldVal) {
+      if (this.expanded && newVal !== -1) {
+        if (process.browser) {
+          document.getElementById(this.focusID).focus()
+        }
       }
     },
     selected (newVal, oldVal) {
@@ -143,6 +157,12 @@ export default {
     }
   },
   methods: {
+    escapeHandler () {
+      if (this.expanded) {
+        this.expanded = false
+        document.getElementById('select-button-' + this.title).focus()
+      }
+    },
     // no highlighted elements (mouseleave)
     unHighlight () {
       this.highlighted = -1
@@ -160,6 +180,9 @@ export default {
         }
       }
     },
+    clickAway () {
+      this.expanded = false
+    },
     highlightMe (val) {
       // highlight with mouse
       this.highlighted = val
@@ -169,6 +192,7 @@ export default {
       if (this.expanded) {
         // changes the highlight with keyboard input
         (this.highlighted !== this.optionsLength ? this.highlighted += 1 : this.highlighted = 0)
+        return true
       } else {
         this.expanded = true
       }
@@ -177,6 +201,7 @@ export default {
       e.preventDefault()
       if (this.expanded) {
         (this.highlighted !== 0 ? this.highlighted -= 1 : this.highlighted = this.optionsLength)
+        return true
       } else {
         this.expanded = true
       }
@@ -196,4 +221,5 @@ export default {
   }
 }
 </script>
+
 
