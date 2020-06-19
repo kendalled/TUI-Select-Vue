@@ -4,7 +4,7 @@
   https://www.w3.org/TR/wai-aria-practices/#Listbox
   https://www.w3.org/TR/wai-aria-practices/examples/listbox/listbox-collapsible.html
   -->
-    <div class="space-y-1" @keydown.up="moveHighlightUp" @keydown.down="moveHighlightDown" @keydown.enter="selectHighlighted" @keydown.escape="expanded = false">
+    <div class="space-y-1" @keydown.up="moveHighlightUp" @keydown.down="moveHighlightDown" @keydown.enter="selectHighlighted" @keydown.escape="escapeHandler">
     <label :id="('listbox-label-' + title)" class="block text-sm font-medium leading-5 text-gray-700">
       {{ title }}
     </label>
@@ -46,7 +46,7 @@
             :id="'options-box-' + title "
             tabindex="-1"
             role="listbox"
-            aria-labelledby="listbox-label"
+            :aria-labelledby="('listbox-label-' + title)"
             :aria-activedescendant="[expanded ? 'listbox-item-' + options[ind] : '']"
             class="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5"
           >
@@ -155,6 +155,12 @@ export default {
     }
   },
   methods: {
+    escapeHandler () {
+      if (this.expanded) {
+        this.expanded = false
+        document.getElementById('select-button-' + this.title).focus()
+      }
+    },
     unHighlight () {
       this.highlighted = -1
     },
@@ -189,6 +195,7 @@ export default {
     },
     toggleSelect () {
       // shows select dropdown
+      this.highlighted = this.ind
       this.expanded = !this.expanded
     },
     clickAway () {
