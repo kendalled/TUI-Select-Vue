@@ -1,5 +1,5 @@
 # TUI-Select-Vue
-NOTE: You need vue-click-outside to handle click.away events
+NOTE: You need vue-click-outside to handle click.away events<br>
 Vue.js Implementation of TailwindUI custom select: look at CustomSelect.vue, MultiSelect.vue
 
 # Note
