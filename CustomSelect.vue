@@ -15,7 +15,7 @@
           type="button"
           aria-haspopup="listbox"
           :aria-expanded="expanded.toString()"
-          :aria-labelledby="('listbox-label-' + title) + ('select-button-' + title)"
+          :aria-labelledby="('listbox-label-' + title) + (' select-button-' + title)"
           :class="[expanded ? 'focus:outline-none' : 'focus:outline-none focus:shadow-outline-blue focus:border-blue-300']"
           class="relative w-full py-2 pl-3 pr-10 text-left transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md cursor-default sm:text-sm sm:leading-5"
           @click.prevent="toggleSelect"
@@ -55,7 +55,7 @@
           -->
             <li
               v-for="(option, o) in options"
-              :id="'listbox-item-' + o"
+              :id="'listbox-item-' + option"
               :key="option"
               :tabindex="o"
               :class="highlighted === o ? 'text-white bg-blue-600' : 'text-gray-900'"
@@ -129,7 +129,7 @@ export default {
       return (this.options.length - 1)
     },
     focusID () {
-      return ('listbox-item-' + this.highlighted.toString())
+      return ('listbox-item-' + this.options[this.highlighted])
     }
   },
   watch: {
