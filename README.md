@@ -1,5 +1,7 @@
-# TUI-Select-Vue
-Vue.js Implementation of TUI (Props to Adam & Team!) custom select: look at CustomSelect.vue, MultiSelect.vue
+# TUI-Select-Vue ⌨️
+Vue.js Implementation of TUI (Props to Adam & Team!) 
+Custom select: Look at CustomSelect.vue, MultiSelect.vue
+Wide Slideover: Look at WideSlide.vue
 
 # Note
 Replace 'Lapel Pins', 'Challenge Coins', and 'Keychains' with any options you choose, then *pass them as a prop* from a parent component. Example below. After that, feel free to delete my sample choices and replace with your own.
