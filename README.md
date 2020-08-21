@@ -1,4 +1,4 @@
-# TUI-Select-Vue ⌨️
+# ⌨️ &nbsp; TUI-Select-Vue
 Vue.js Implementation of TUI (Props to Adam & Team!) 
 Custom select: Look at CustomSelect.vue, MultiSelect.vue
 Wide Slideover: Look at WideSlide.vue
