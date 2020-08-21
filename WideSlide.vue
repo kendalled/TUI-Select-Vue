@@ -21,7 +21,7 @@
           enter-active-class="transition duration-500 ease-in-out transform sm:duration-700"
           enter-class="translate-x-full"
           enter-to-class="translate-x-0"
-          leave-active-class="transition ease-in-out transform duratoin-500 sm:duration-700"
+          leave-active-class="transition duration-500 ease-in-out transform sm:duration-700"
           leave-class="translate-x-0"
           leave-to-class="translate-x-full"
           @after-leave="showWrapper = false"
@@ -258,7 +258,7 @@ export default {
   },
   methods: {
     closeSlide () {
-      // only needs to change this variable, 
+      // only needs to change this variable,
       // as showWrapper will change after the animation completes
       this.slideOpen = false
       this.$emit('closed')
