@@ -54,7 +54,7 @@ export default {
   computed: {
     filteredList () {
       const arr = [...this.myList]
-      return (this.filterList ? arr.splice(0, 2) : arr)
+      return (this.filterList ? arr.splice(1, 2) : arr)
     }
   }
 }
